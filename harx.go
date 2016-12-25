@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
 	"io/ioutil"
 	"log"
 	"net/url"
@@ -202,7 +203,13 @@ func output(index int, entry HEntry) {
 }
 
 func listEntries(index int, entry HEntry) {
-	fmt.Printf("[%3d][%6s][%25s][Size:%8d][URL:%s]\n", index, entry.Request.Method, entry.Response.Content.MimeType, entry.Response.Content.Size, entry.Request.Url)
+	fmt.Printf("%3s %6s %25s %8s %s\n",
+		color.GreenString("["+strconv.Itoa(index)+"]"),
+		color.YellowString("["+entry.Request.Method+"]"),
+		color.RedString("["+entry.Response.Content.MimeType+"]"),
+		color.CyanString("[Size: "+strconv.Itoa(entry.Response.Content.Size)+"]"),
+		color.MagentaString("[URL: "+entry.Request.Url+"]"),
+	)
 }
 
 func extractOne(entry HEntry) {
