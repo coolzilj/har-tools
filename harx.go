@@ -63,7 +63,8 @@ func (e *HEntry) dump(dir string) {
 	path = dir + "/" + host + path
 	if j := strings.LastIndex(path, "/"); j != -1 {
 		os.MkdirAll(path[0:j], os.ModePerm)
-		e.Response.Content.writeTo(path)
+		ext := GetExtensionByMime(e.Response.Content.MimeType)
+		e.Response.Content.writeTo(path + ext)
 	}
 }
 
@@ -75,8 +76,30 @@ func (e *HEntry) dumpDirectly(dir string) {
 	}
 	path := u.Path
 	if j := strings.LastIndex(path, "/"); j != -1 {
-		e.Response.Content.writeTo(dir + path[j:])
+		ext := GetExtensionByMime(e.Response.Content.MimeType)
+		e.Response.Content.writeTo(dir + path[j:] + ext)
 	}
+}
+
+var MimeTypesMap = map[string]string{
+	".css":  "text/css",
+	".html": "text/html",
+	".gif":  "image/gif",
+	".jpg":  "image/jpeg",
+	".png":  "image/png",
+	".svg":  "image/svg+xml",
+	".js":   "application/javascript",
+	".pdf":  "application/pdf",
+	".json": "application/json",
+}
+
+func GetExtensionByMime(mimeToCheck string) string {
+	for ext, mimeType := range MimeTypesMap {
+		if strings.HasPrefix(mimeType, mimeToCheck) {
+			return ext
+		}
+	}
+	return ""
 }
 
 func decode(str []byte, fileName string) {
